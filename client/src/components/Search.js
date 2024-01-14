@@ -64,25 +64,43 @@ function SearchForm() {
     legend: {
       display: true,
       position: 'right',
-      labels: {
-        generateLabels: function (chart) {
-          const data = chart.data;
-          if (data.labels.length && data.datasets.length) {
-            return data.labels.map((label, i) => {
-              const dataset = data.datasets[0];
-              const value = dataset.data[i];
-              const color = dataset.backgroundColor[i];
-              return {
-                text: `${label}: ${value}`,
-                fillStyle: color,
-                strokeStyle: color,
-                hidden: false,
-                lineWidth: 2,
-                textColor: '#fff'
-              };
-            });
-          }
-          return [];
+      // labels: {
+      //   generateLabels: function (chart) {
+      //     const data = chart.data;
+      //     if (data.labels.length && data.datasets.length) {
+      //       return data.labels.map((label, i) => {
+      //         const dataset = data.datasets[0];
+      //         const value = dataset.data[i];
+      //         const color = dataset.backgroundColor[i];
+      //         return {
+      //           text: `${label}: ${value}`,
+      //           fillStyle: color,
+      //           strokeStyle: color,
+      //           hidden: false,
+      //           lineWidth: 2,
+      //           textColor: '#fff'
+      //         };
+      //       });
+      //     }
+      //     return [];
+      //   },
+      // },
+    },
+    tooltips: {
+      callbacks: {
+        label: function (tooltipItem, data) {
+          const dataset = data.datasets[0];
+          const total = dataset.data.reduce((previousValue, currentValue) => previousValue + currentValue);
+          const currentValue = dataset.data[tooltipItem.index];
+          const percentage = Math.floor((currentValue / total) * 100 + 0.5);
+          return `${data.labels[tooltipItem.index]}: ${currentValue} (${percentage}%)`;
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: 'blue', // Legend text color
         },
       },
     },
@@ -190,38 +208,12 @@ function SearchForm() {
 
   const handleSearch = async () => {
     // e.preventDefault();
-    // console.log(author)
-    // console.log(year)
-    // console.log(domain)
-    // console.log(publicationType)
     console.log(filter)
     try {
       const response = await axios.get('/api/research', {
         params: filter
-        // method: 'POST',
-        // headers: {
-        //   'Content-Type': 'application/json',
-        // },
-        // body:
-        //   JSON.stringify({
-        //     author,
-        //     year,
-        //     domain,
-        //     publicationType
-        //  }),
       });
       console.log(response.status)
-      // .then(response => response.json())
-      // .then(data => {
-      // console.log('Success:', response);
-      // })
-
-
-      // if (!response.ok) {
-      //   throw new Error('Network response was not ok');
-      // }
-
-      // const data = await response.json();
       setResults(response.data);
       console.log(results)
     } catch (error) {
@@ -236,17 +228,6 @@ function SearchForm() {
   return (
     <div  style={{ display: 'flex', justifyContent: 'space-around' }}>
       <div className='p-5' style={{ display: 'flex', flexDirection: 'column' }}>
-        {/* Your form fields go here
-      <label htmlFor="author">Author:</label>
-      <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} /><br></br>
-      <label htmlFor="year">Year:</label>
-      <input type="text" value={year} onChange={(e) => setYear(e.target.value)} /><br></br>
-      <label htmlFor="domain">Domain:</label>
-      <input type="text" value={domain} onChange={(e) => setDomain(e.target.value)} /><br></br>
-      <label htmlFor="publication_type">Publication Type:</label>
-      <input type="text" value={publicationType} onChange={(e) => setPublicationType(e.target.value)} /><br></br>
-
-      <button onClick={handleSearch}>Search</button> */}
         <form onSubmit={handleSearch}>
           <div className="row mb-3">
             <label htmlFor="author" className="col-sm-2 col-form-label">Author :</label>
@@ -283,7 +264,6 @@ function SearchForm() {
           </div>
         </form>
       
-
         {/* Display search results */}
         {/* <div className='p-5'> */}
         <table className="table table-hover table-bordered">
@@ -316,7 +296,7 @@ function SearchForm() {
           </tbody>
         </table>
       </div>
-      <div className='p-5' style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div>
             <h2>Domian Distribution</h2>
             <Doughnut data={domainChartData} options={domainChartOptions} />
@@ -335,7 +315,6 @@ function SearchForm() {
           </div>
         </div>
     </div>
-
   );
 }
 

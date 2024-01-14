@@ -35,10 +35,6 @@ def get_research():
         year = request.args.get('year', '')
         domain = request.args.get('domain', '')
         publication_type = request.args.get('publication_type', '')
-        print(author)
-        print(year)
-        print(domain)
-        print(publication_type)
 
         query = Research.query
 
@@ -55,7 +51,6 @@ def get_research():
         print(f"Author: {author}, Year: {year}, Domain: {domain}, Publication Type: {publication_type}")
         print(f"Generated SQL Query: {query.statement}")
         print(f"Results: {results}")
-        print(results)
         serialized_results=[{'id':i.id,'author':i.author,'title':i.title,'year':i.year,'domain':i.domain,'publication_type':i.publication_type} for i in results]
         return jsonify(serialized_results)
     except Exception as e:
@@ -150,71 +145,6 @@ def get_publication_trend():
 # import_data('books_new.csv')
 # import_data('journal_new.csv')
 # import_data('Conference.csv')'''
-
-# @app.route('/')
-# def index():
-#     return render_template('search.html')
-
-# # Define a route to handle search and filtering
-# @app.route('/search', methods=['POST'])
-# def search():
-#     author = request.form.get('author')
-#     year = request.form.get('year')
-#     domain = request.form.get('domain')
-#     publication_type = request.form.get('publication_type')
-
-#     query = Research.query
-
-#     if author:
-#         query = query.filter(Research.author.ilike(f"%{author}%"))
-#     if year:
-#         query = query.filter(Research.year == year)
-#     if domain:
-#         query = query.filter(Research.domain.ilike(f"%{domain}%"))
-#     if publication_type:
-#         query = query.filter(Research.publication_type == publication_type)
-
-#     results = query.all()
-#     return render_template('results.html', results=results)
-
-# @app.route('/add', methods=['GET', 'POST'])
-# def add():
-#     if request.method == 'POST':
-#         title = request.form['title']
-#         domain = request.form['domain']
-#         year = request.form['year']
-#         author = request.form['author']
-#         publication_type = request.form['publication_type']
-
-#         new_research = Research(title=title, domain=domain, year=year, author=author, publication_type=publication_type)
-#         db.session.add(new_research)
-#         db.session.commit()
-#         return redirect(url_for('index'))
-
-#     return render_template('add.html')
-
-# @app.route('/edit/<int:id>', methods=['GET', 'POST'])
-# def edit(id):
-#     research = Research.query.get(id)
-
-#     if request.method == 'POST':
-#         research.title = request.form['title']
-#         research.domain = request.form['domain']
-#         research.year = request.form['year']
-#         research.author = request.form['author']
-#         research.publication_type = request.form['publication_type']
-
-#         db.session.commit()
-#         return redirect(url_for('index'))
-
-#     return render_template('edit.html', research=research)
-
-# @app.route('/delete/<int:id>')
-# def delete(id):
-#     research = Research.query.get(id)
-#     db.session.delete(research)
-#     db.session.commit()
-#     return redirect(url_for('index'))
 
 # @app.route('/admin')
 # def admin():
